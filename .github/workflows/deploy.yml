@@ -1,0 +1,62 @@
+name: CI/CD FastAPI Docker
+
+on:
+  push:
+    branches: -main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 3. Build and push Docker images
+      - name: Build and push Docker images
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-web:latest -f Dockerfile .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-web:latest
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-worker:latest -f Dockerfile .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-worker:latest
+
+      # 4. SSH into VPS and deploy
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ~/bot01  # your project folder on VPS
+
+            # 1. Pull latest Docker images
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-web:latest
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-worker:latest
+
+            # 2. Generate .env.prod from secrets
+            cat > .env.prod <<EOF
+            ENV=PROD
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}
+            REDIS_HOST=${{ secrets.REDIS_HOST }}
+            REDIS_PORT=${{ secrets.REDIS_PORT }}
+            REDIS_USERNAME=${{ secrets.REDIS_USERNAME }}
+            REDIS_PASS=${{ secrets.REDIS_PASS }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_ALGORITHM=${{ secrets.JWT_ALGORITHM }}
+            JWT_EXPIRE_MINUTES=${{ secrets.JWT_EXPIRE_MINUTES }}
+            EOF
+
+      - name: Restart-containers
+        run: |
+          docker-compose down
+          docker-compose up -d

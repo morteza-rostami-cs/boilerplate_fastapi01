@@ -4,7 +4,7 @@ services:
   web:
     build: .
     env_file:
-      - .env.docker
+      - ${ENV_FILE:-.env.docker}
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - .:/app
@@ -22,8 +22,9 @@ services:
 
   worker:
     build: .
+    #- .env.docker
     env_file:
-      - .env.docker
+      - ${ENV_FILE:-.env.docker}
     command: celery -A app.tasks.worker.celery_app worker --loglevel=info -P solo
     volumes:
       - .:/app
