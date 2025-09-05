@@ -1,0 +1,3 @@
+Job 12 completed
+new log: hi, i am morteza
+Celery Job 56 completed
