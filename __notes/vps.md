@@ -20,6 +20,9 @@ pass: adgsd303d
 # add to sudoers
 usermod -aG sudo bot01
 
+# copy key for new user
+ssh-copy-id -i ~/.ssh/windows-nomad.pub bot01@104.194.156.145
+
 # get vps ready for github actions and docker deployment:
 
 sudo apt update && sudo apt upgrade -y
