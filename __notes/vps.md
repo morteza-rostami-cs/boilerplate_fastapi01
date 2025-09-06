@@ -47,6 +47,9 @@ root@ubuntu-Utah-0:~# docker-compose version
 Docker Compose version v2.20.2
 root@ubuntu-Utah-0:~#
 
+# make directories
+mkdir -p ~/bot01
+cd ~/bot01
 
 
  -->
