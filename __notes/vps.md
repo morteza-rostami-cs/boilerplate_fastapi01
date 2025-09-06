@@ -5,10 +5,10 @@ ssh-keygen -t ed25519 -C "github-actions" -f github_action_key
 
 
 # copy ssh into vps
-ssh-copy-id -i ~/.ssh/windows-nomad.pub root@144.172.109.241
+ssh-copy-id -i ~/.ssh/windows-nomad.pub root@104.194.156.145
 
 # login
- ssh root@144.172.109.241
+ ssh root@104.194.156.145
 
 # create a new user
 adduser bot01
@@ -38,6 +38,7 @@ sudo usermod -aG docker bot01
 
 root@ubuntu-Utah-0:~# export DOCKER_COMPOSE_VERSION=2.20.2
 root@ubuntu-Utah-0:~# sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
