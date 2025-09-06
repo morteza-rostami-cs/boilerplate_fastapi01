@@ -37,6 +37,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           timeout: 10m # 10 min
+          command_timeout: 15m
           script: |
             cd ~/bot01  # your project folder on VPS
 
@@ -92,5 +93,5 @@ jobs:
             EOF
 
             # start containers
-            docker-compose down
+            docker-compose down --remove-orphans
             docker-compose up -d
