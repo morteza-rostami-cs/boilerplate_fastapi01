@@ -42,8 +42,8 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-web:latest
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-worker:latest
 
-            # 2. Generate .env.prod from secrets
-            cat > .env.prod <<EOF
+            # 2. Generate .env.docker from secrets
+            cat > .env.docker <<EOF
             ENV=PROD
             MONGO_URI=${{ secrets.MONGO_URI }}
             MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}

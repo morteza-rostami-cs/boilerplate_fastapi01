@@ -2,7 +2,11 @@ version: "3.9"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      # both web and worker use the same dockerfile/image
+      dockerfile: Dockerfile
+    container_name: api01
     env_file:
       - ${ENV_FILE:-.env.docker}
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -21,7 +25,10 @@ services:
       - mongo
 
   worker:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: worker01
     #- .env.docker
     env_file:
       - ${ENV_FILE:-.env.docker}
