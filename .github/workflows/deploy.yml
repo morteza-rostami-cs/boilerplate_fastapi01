@@ -57,6 +57,43 @@ jobs:
             JWT_EXPIRE_MINUTES=${{ secrets.JWT_EXPIRE_MINUTES }}
             EOF
 
+            # 3. copy/create docker-compose.yml
+            cat > docker-compose.yml <<EOF
+            version: "3.9"
+            services:
+              web:
+                image: ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-web:latest
+                env_file:
+                  - .env.docker
+                ports:
+                  - "8000:8000"
+                depends_on:
+                  - redis
+                  - mongo
+              
+              worker:
+                image: ${{ secrets.DOCKER_HUB_USERNAME }}/bot01-worker:latest
+                env_file:
+                  - .env.docker
+                depends_on:
+                  - redis
+                  - mongo
+              
+              redis:
+                image: redis:7
+                ports:
+                  - "6379:6379"
+              
+              mongo:
+                image: mongo:6
+                ports:
+                  - "27017:27017"
+            EOF
+
+            # start containers
+            docker-compose down
+            docker-compose up -d
+
       - name: Restart-containers
         run: |
           docker-compose down
