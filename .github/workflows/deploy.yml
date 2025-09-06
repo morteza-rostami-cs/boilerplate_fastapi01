@@ -36,7 +36,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          timeout: 600 # 10 min
+          timeout: 10m # 10 min
           script: |
             cd ~/bot01  # your project folder on VPS
 
